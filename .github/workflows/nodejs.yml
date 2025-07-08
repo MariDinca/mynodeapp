@@ -37,3 +37,22 @@ jobs:
     - name: Push image to DockerHub
       run: docker tag my-node-app ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest &&
            docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
+
+    - name: Decode PEM key for SSH
+      run: |
+        echo "${{ secrets.EC2_KEY_B64 }}" | base64 -d > key.pem
+        chmod 400 key.pem
+
+    - name: SSH and deploy Docker image on EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
+
+          # Stop & remove old container if exists
+          docker stop my-app || true
+          docker rm my-app || true
+   
+          # Run new container
+          docker run -d --name my-app -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
+          EOF
+
