@@ -54,5 +54,5 @@ jobs:
    
           # Run new container
           docker run -d --name my-node-app -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
-          EOF
+        EOF
 
