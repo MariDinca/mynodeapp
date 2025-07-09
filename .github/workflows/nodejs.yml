@@ -46,13 +46,13 @@ jobs:
     - name: SSH and deploy Docker image on EC2
       run: |
         ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
 
           # Stop & remove old container if exists
-          docker stop my-app || true
-          docker rm my-app || true
+          docker stop my-node-app || true
+          docker rm my-node-app || true
    
           # Run new container
-          docker run -d --name my-app -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
+          docker run -d --name my-node-app -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
           EOF
 
