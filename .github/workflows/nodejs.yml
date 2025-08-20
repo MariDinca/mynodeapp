@@ -45,20 +45,20 @@ jobs:
 
     - name: SSH and deploy Docker image on EC2
       run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          # Update packages
-          sudo apt update
-          sudo apt install -y docker.io
-          sudo systemctl enable --now docker
-          sudo usermod -aG docker $USER
-          newgrp docker
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+        # Update packages
+        sudo apt update
+        sudo apt install -y docker.io
+        sudo systemctl enable --now docker
+        sudo usermod -aG docker $USER
+        newgrp docker
        
-	      docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
+        docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
 
-          # Stop & remove old container if exists
-          docker stop my-node-app || true
-          docker rm my-node-app || true
+        # Stop & remove old container if exists
+        docker stop my-node-app || true
+        docker rm my-node-app || true
    
-          # Run new container
-          docker run -d --name my-node-app -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
+        # Run new container
+        docker run -d --name my-node-app -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
         EOF
