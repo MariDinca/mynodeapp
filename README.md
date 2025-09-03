@@ -1,4 +1,3 @@
-DevOps & Cloud Engineer | Infrastructure as Code | CI/CD
 
 I’m a DevOps & Cloud Engineer passionate about infrastructure, automation, and building scalable systems.
 I specialize in turning applications into production-ready systems using AWS, Terraform, Docker, Kubernetes, and CI/CD pipelines.
