@@ -4,6 +4,7 @@ I’m a DevOps & Cloud Engineer passionate about infrastructure, automation, and
 I specialize in turning applications into production-ready systems using AWS, Terraform, Docker, Kubernetes, and CI/CD pipelines.
  
 🛠️ Skills & Technologies
+
 •	Cloud Platforms: AWS (EC2, S3, IAM, VPC, EKS)
 •	Infrastructure as Code (IaC): Terraform, Ansible
 •	Containers & Orchestration: Docker, Kubernetes
