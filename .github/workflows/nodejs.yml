@@ -23,8 +23,7 @@ jobs:
       run: npm install
 
     - name: Run tests
-      run: echo "No tests defined"  # aici pui comanda de test (ex: `npm test`)
-
+      run: echo "No tests defined" 
     - name: Build Docker image
       run: docker build -t my-node-app .
 
