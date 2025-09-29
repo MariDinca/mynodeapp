@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mynodeapp-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mynodeapp
+  template:
+    metadata:
+      labels:
+        app: mynodeapp
+    spec:
+      containers:
+      - name: nodeapp
+        image: testdocker4545/my-node-app:latest
+        ports:
+        - containerPort: 3000
