@@ -2,9 +2,9 @@ name: Node.js CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "develop" ]
 
 jobs:
   build:
@@ -41,18 +41,28 @@ jobs:
     - name: Decode PEM key for SSH
       run: |
         echo "${{ secrets.SSH_KEY }}" > key.pem
+<<<<<<< HEAD
         chmod 400 EC2_KEY_B64  
+=======
+        chmod 400 key.pem
+>>>>>>> a08c1db3aea1eda9189533f9c8d13da42bac6707
 
     - name: SSH and deploy Docker image on EC2
       run: |
         ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
+        # Update packages
+        sudo apt update
+        sudo apt install -y docker.io
+        sudo systemctl enable --now docker
+        sudo usermod -aG docker $USER
+        newgrp docker
+       
+        docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
 
-          # Stop & remove old container if exists
-          docker stop my-node-app || true
-          docker rm my-node-app || true
+        # Stop & remove old container if exists
+        docker stop my-node-app || true
+        docker rm my-node-app || true
    
-          # Run new container
-          docker run -d --name my-node-app -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
+        # Run new container
+        docker run -d --name my-node-app -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
         EOF
-
