@@ -1,5 +1,5 @@
 
-name: CI-CD Docker -> AKS
+name: CI-CD Docker
 
 on:
 push:
