@@ -1,0 +1,58 @@
+name: Node.js CI/CD
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: echo "No tests defined" 
+    - name: Build Docker image
+      run: docker build -t my-node-app .
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Push image to DockerHub
+      run: docker tag my-node-app ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest &&
+           docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
+
+    - name: Decode PEM key for SSH
+      run: |
+        echo "${{ secrets.SSH_KEY }}" > key.pem
+        chmod 400 key.pem
+
+    - name: SSH and deploy Docker image on EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+        # Update packages
+        sudo apt update
+        sudo apt install -y docker.io
+        sudo systemctl enable --now docker
+        sudo usermod -aG docker $USER
+        newgrp docker
+       
+        docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
+
+        # Stop & remove old container if exists
+        docker stop my-node-app || true
+        docker rm my-node-app || true
+   
+        # Run new container
+        docker run -d --name my-node-app -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/my-node-app:latest
+        EOF
