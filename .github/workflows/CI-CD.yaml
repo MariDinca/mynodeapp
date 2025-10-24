@@ -26,7 +26,7 @@ jobs:
       with:
         context: ./docker
         push: true
-        tags: ${{ secrets.DOCKERHUB_USER }}/testdocker4545/my-node-app
+        tags: ${{ secrets.DOCKERHUB_USER }}/my-node-app:latest
 
 
     - name: Azure login
